@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: movie-chatbot
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn chatbot_api:app"
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://movietheater_user:DpqonU3tkphMU0Y160g3VZpXyDZOoyff@d1m7efm3jp1c73edteo0-a.singapore-postgres.render.com:5432/movietheater
