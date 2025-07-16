@@ -12,3 +12,6 @@ def chat():
     user_input = request.json.get("message", "")
     reply = generate_answer(user_input)
     return jsonify({"reply": reply})
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)

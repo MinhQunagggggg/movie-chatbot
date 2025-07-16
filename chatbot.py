@@ -29,18 +29,21 @@ def generate_answer(user_input: str):
             else:
                 return f"❌ Không có phim thể loại {genre_matched.title()} đang chiếu hôm nay."
 
-    if not intent and not phim and raw_name:
-        dir_matches = [m for m in movies if raw_name in m["dir_clean"]]
-        if dir_matches:
-            phim_names = ", ".join(sorted(set(m["movie_name_vn"] for m in dir_matches)))
-            return f"Đạo diễn {dir_matches[0]['director']} có các phim: {phim_names}"
-
+    # Nếu intent là diễn viên, nhưng không rõ tên phim, thì tìm diễn viên
+    if intent == "actor" and not phim:
         act_matches = [m for m in movies if any(raw_name in actor for actor in m["actors_clean"])]
         if act_matches:
             phim_names = ", ".join(sorted(set(m["movie_name_vn"] for m in act_matches)))
             return f"Diễn viên {raw_name.title()} có trong các phim: {phim_names}"
-
-        return f"Tôi không tìm thấy thông tin phù hợp với {raw_name.title()}."
+        else:
+            return f"Tôi không tìm thấy phim nào có diễn viên {raw_name.title()}."
+    if intent == "director" and not phim:
+        dir_matches = [m for m in movies if raw_name in m["dir_clean"]]
+        if dir_matches:
+            phim_names = ", ".join(sorted(set(m["movie_name_vn"] for m in dir_matches)))
+            return f"Đạo diễn {dir_matches[0]['director']} có các phim: {phim_names}"
+        else:
+            return f"Tôi không tìm thấy đạo diễn nào tên {raw_name.title()}."
 
     if intent is None and phim:
         return f"Bạn đang hỏi về phim {phim['movie_name_vn']}. Vui lòng nói rõ bạn muốn biết gì: nội dung, trailer, diễn viên...?"

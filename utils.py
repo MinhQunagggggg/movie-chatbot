@@ -45,9 +45,16 @@ def detect_intent(user_input: str):
             "toi muon xem phim cua dao dien", "phim cua dao dien", "xem phim cua"
         ],
         "actor": [
-            "dien vien", "ai dong", "ai tham gia", "phim co", "phim nao co",
-            "phim cua dien vien", "xem phim cua", "xem phim co", "toi muon xem phim co"
-        ],
+    "dien vien", "ai dong", "ai tham gia",
+    "phim co", "phim nao co", "phim cua dien vien",
+    "xem phim cua", "xem phim co", "toi muon xem phim co",
+    "co phim cua", "phim nao cua", "phim cua"
+],
+"director": [
+    "dao dien", "ai dao dien", "phim cua ai", "phim nao cua dao dien",
+    "co phim cua dao dien", "phim nao cua", "phim cua"
+],
+
         "hot_movie": ["phim hot", "phim hay", "phim noi bat"],
         "genre_action": ["hanh dong", "danh dam", "chien dau"],
         "genre_horror": ["kinh di", "ma", "so hai"],
