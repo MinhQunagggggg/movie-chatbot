@@ -1,6 +1,7 @@
 import psycopg2
 import re
 from datetime import datetime
+import pytz
 from utils import clean_text, parse_date
 
 def connect_db():
@@ -77,7 +78,7 @@ def get_multiple_nearest_showtimes():
         """)
         rows = cur.fetchall()
         result = []
-        now = datetime.now().time()
+        now = datetime.now(pytz.timezone("Asia/Ho_Chi_Minh")).time()
         seen_movies = set()
 
         for movie_name, show_date, show_time_str, room in rows:
