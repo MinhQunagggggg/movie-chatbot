@@ -4,6 +4,7 @@ from datetime import datetime
 import pytz
 from utils import clean_text, parse_date
 
+
 def connect_db():
     return psycopg2.connect(
         host="d1m7efm3jp1c73edteo0-a.singapore-postgres.render.com",
