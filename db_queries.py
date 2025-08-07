@@ -7,11 +7,11 @@ from utils import clean_text, parse_date
 
 def connect_db():
     return psycopg2.connect(
-        host="d1m7efm3jp1c73edteo0-a.singapore-postgres.render.com",
+        host="d2a28hfdiees738idr3g-a.singapore-postgres.render.com",
         port="5432",
-        dbname="movietheater",
-        user="movietheater_user",
-        password="DpqonU3tkphMU0Y160g3VZpXyDZOoyff"
+        dbname="movietheater_gxph",
+        user="movietheater_gxph_user",
+        password="E0t8QaPjbUvTctW41h2dp07tJuCeuAA3"
     )
 
 def load_movies_data():

@@ -5,7 +5,15 @@ from db_queries import (
     get_nearest_showtime_for, get_showtime_today_for, get_movies_by_genre_today
 )
 
-movies = load_movies_data()
+from db_queries import load_movies_data
+
+def get_movies_data():
+    try:
+        return load_movies_data()
+    except Exception as e:
+        print(f"Failed to load movie data: {e}")
+        return []
+
 
 def generate_answer(user_input: str):
     user_clean = clean_text(user_input)
