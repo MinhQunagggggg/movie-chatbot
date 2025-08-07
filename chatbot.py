@@ -5,22 +5,27 @@ from db_queries import (
     get_nearest_showtime_for, get_showtime_today_for, get_movies_by_genre_today
 )
 
-from db_queries import load_movies_data
+_movies_cache = None  # Bộ nhớ đệm cục bộ
 
-def get_movies_data():
-    try:
-        return load_movies_data()
-    except Exception as e:
-        print(f"Failed to load movie data: {e}")
-        return []
+def get_movies():
+    global _movies_cache
+    if _movies_cache is None:
+        try:
+            _movies_cache = load_movies_data()
+        except Exception as e:
+            print(f"⚠️ Không thể load dữ liệu phim: {e}")
+            _movies_cache = []
+    return _movies_cache
 
 
 def generate_answer(user_input: str):
+    movies = get_movies()
     user_clean = clean_text(user_input)
     intent = detect_intent(user_input)
     movie_candidate = extract_movie_name(user_input)
     phim = fuzzy_find_movie_name(movie_candidate, movies) if len(movie_candidate.split()) > 1 else None
     raw_name = movie_candidate.strip()
+
     if intent == "genre_query":
         genres = [
             "hành động", "phiêu lưu", "hài", "kinh dị", "tâm lý", "tình cảm",
@@ -37,7 +42,6 @@ def generate_answer(user_input: str):
             else:
                 return f"❌ Không có phim thể loại {genre_matched.title()} đang chiếu hôm nay."
 
-    # Nếu intent là diễn viên, nhưng không rõ tên phim, thì tìm diễn viên
     if intent == "actor" and not phim:
         act_matches = [m for m in movies if any(raw_name in actor for actor in m["actors_clean"])]
         if act_matches:
@@ -45,6 +49,7 @@ def generate_answer(user_input: str):
             return f"Diễn viên {raw_name.title()} có trong các phim: {phim_names}"
         else:
             return f"Tôi không tìm thấy phim nào có diễn viên {raw_name.title()}."
+
     if intent == "director" and not phim:
         dir_matches = [m for m in movies if raw_name in m["dir_clean"]]
         if dir_matches:
@@ -103,6 +108,7 @@ def main():
             break
         except Exception as e:
             print(f"⚠️ Lỗi xảy ra: {str(e)}\n")
+
 
 if __name__ == "__main__":
     main()
