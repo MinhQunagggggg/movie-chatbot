@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "python run_both.py"
+    startCommand: "gunicorn chatbot_api:app --workers 2 --threads 8 --timeout 120"
     envVars:
       - key: BOT_TOKEN
         value: 7920415552:AAF3IDcVqYWOGXrrbrOFl_Go2TNEeyNIpzs
