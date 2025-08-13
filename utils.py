@@ -76,27 +76,13 @@ def detect_intent(user_input: str):
             "xem phim .* luc nao", "phim .* gan nhat", "phim .* suat chieu"
         ],
         "genre_query": [
-    "phim hanh dong", "co phim hanh dong khong",
-    "phim phieu luu",
-    "phim hai",
-    "phim kinh di",
-    "phim tam ly", "phim tam li",
-    "phim tinh cam",
-    "phim khoa hoc vien tuong",
-    "phim hoat hinh",
-    "phim chien tranh",
-    "phim hinh su",
-    "phim vien tay",
-    "phim am nhac",
-    "phim the thao",
-    "phim tai lieu",
-    "phim gia dinh",
-    "phim lich su",
-    "phim gia tuong",
-    "phim sieu anh hung",
-    "phim anime",
-    "phim phim ngan", "phim ngan"
-]
+            "phim hanh dong", "co phim hanh dong khong",
+            "phim phieu luu", "phim hai", "phim kinh di", "phim tam ly", "phim tam li",
+            "phim tinh cam", "phim khoa hoc vien tuong", "phim hoat hinh", "phim chien tranh",
+            "phim hinh su", "phim vien tay", "phim am nhac", "phim the thao", "phim tai lieu",
+            "phim gia dinh", "phim lich su", "phim gia tuong", "phim sieu anh hung", "phim anime",
+            "phim phim ngan", "phim ngan"
+        ]
 
 
     }
@@ -106,6 +92,10 @@ def detect_intent(user_input: str):
         for k in keys:
             corpus.append(clean_text(k))
             intent_labels.append(label)
+
+        # ✅ Ưu tiên kiểm tra chứa từ khóa thể loại
+    if any(g in user_clean for g in intent_keywords.get("genre_query", [])):
+        return "genre_query"
 
     for phrase in corpus:
         if get_close_matches(user_clean, [phrase], n=1, cutoff=0.8):

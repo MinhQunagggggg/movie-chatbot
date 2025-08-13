@@ -54,7 +54,7 @@ def generate_answer(user_input: str):
         dir_matches = [m for m in movies if raw_name in m["dir_clean"]]
         if dir_matches:
             phim_names = ", ".join(sorted(set(m["movie_name_vn"] for m in dir_matches)))
-            return f"Đạo diễn {dir_matches[0]['director']} có các phim: {phim_names}"
+            return f"{dir_matches[0]['director']} Đạo diễn phim: {phim_names}"
         else:
             return f"Tôi không tìm thấy đạo diễn nào tên {raw_name.title()}."
 
