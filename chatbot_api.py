@@ -3,18 +3,12 @@ from chatbot import generate_answer
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.get("/")
 def home():
     return "✅ Movie Chatbot API is running!"
 
-@app.route("/api/chat", methods=["GET", "POST"])
+@app.post("/api/chat")
 def chat():
-    if request.method == "GET":
-        return jsonify({"info": "✅ Gửi POST với JSON {'message': '...'} để nhận phản hồi."})
-    user_input = request.json.get("message", "")
-    reply = generate_answer(user_input)
-    return jsonify({"reply": reply})
-
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    data = request.get_json(silent=True) or {}
+    msg = (data.get("message") or "").strip()
+    return jsonify({"reply": generate_answer(msg) if msg else "Thiếu message"})
