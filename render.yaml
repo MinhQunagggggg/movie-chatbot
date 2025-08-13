@@ -4,7 +4,9 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn chatbot_api:app"
+    startCommand: "python run_both.py"
     envVars:
+      - key: BOT_TOKEN
+        value: 7920415552:AAF3IDcVqYWOGXrrbrOFl_Go2TNEeyNIpzs
       - key: DATABASE_URL
         value: postgresql://movietheater_user:DpqonU3tkphMU0Y160g3VZpXyDZOoyff@d1m7efm3jp1c73edteo0-a.singapore-postgres.render.com:5432/movietheater
