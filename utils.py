@@ -114,16 +114,25 @@ def fuzzy_find_movie_name(name: str, movie_list: list) -> dict:
     if not name_clean:
         return None
 
+    # So khớp tuyệt đối (không clean) với movie_name_vn
+    for m in movie_list:
+        if name.strip().lower() == m["movie_name_vn"].strip().lower():
+            return m
+
+    # So khớp tuyệt đối với vn_clean
+    for m in movie_list:
+        if name_clean == m["vn_clean"]:
+            return m
+
+    # So khớp chứa trong tên
     for m in movie_list:
         if name_clean in m["vn_clean"]:
             return m
 
-    matched = get_close_matches(name_clean, [m["vn_clean"] for m in movie_list], n=1, cutoff=0.6)
+    # fallback: fuzzy match (cutoff thấp hơn cho tên ngắn)
+    matched = get_close_matches(name_clean, [m["vn_clean"] for m in movie_list], n=1, cutoff=0.5)
     if matched:
         return next((m for m in movie_list if m["vn_clean"] == matched[0]), None)
 
-    matched_exact = get_close_matches(name.strip().lower(), [m["movie_name_vn"].lower() for m in movie_list], n=1, cutoff=0.8)
-    if matched_exact:
-        return next((m for m in movie_list if m["movie_name_vn"].lower() == matched_exact[0]), None)
-
     return None
+

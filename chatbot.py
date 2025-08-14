@@ -23,7 +23,7 @@ def generate_answer(user_input: str):
     user_clean = clean_text(user_input)
     intent = detect_intent(user_input)
     movie_candidate = extract_movie_name(user_input)
-    phim = fuzzy_find_movie_name(movie_candidate, movies) if len(movie_candidate.split()) > 1 else None
+    phim = fuzzy_find_movie_name(movie_candidate, movies) if movie_candidate else None
     raw_name = movie_candidate.strip()
 
     if intent == "genre_query":
@@ -65,8 +65,12 @@ def generate_answer(user_input: str):
         movies_today = get_movies_showing_today()
         return "Hôm nay đang chiếu các phim:\n" + "\n".join(f"🎞️ {m}" for m in movies_today) if movies_today else "Không có phim nào đang chiếu hôm nay."
 
+    # ✳️ BỔ SUNG xử lý khi có từ 'suất chiếu' nhưng không xác định được intent
     if not intent and phim and "suat chieu" in user_clean:
-        return get_nearest_showtime_for(phim["movie_name_vn"])
+        return get_showtime_today_for(phim["movie_name_vn"])
+
+    if intent == "showtime" and phim:
+        return get_showtime_today_for(phim["movie_name_vn"])
 
     if intent == "nearest_showtime_multiple":
         return "\n".join(get_nearest_showtime_for(phim["movie_name_vn"])) if phim else get_multiple_nearest_showtimes()
@@ -85,12 +89,11 @@ def generate_answer(user_input: str):
             return f"Phim {phim['movie_name_vn']} do {phim['director']} đạo diễn."
         elif intent == "actor":
             return f"Diễn viên trong phim {phim['movie_name_vn']} gồm: {phim['actor']}"
-        elif intent == "showtime":
-            return get_showtime_today_for(phim["movie_name_vn"])
         elif intent == "rating":
             return f"Phim {phim['movie_name_vn']} được đánh giá {phim.get('rating', 'chưa có')} điểm."
 
     return "Tôi chưa có dữ liệu phù hợp để trả lời."
+
 
 
 def main():
