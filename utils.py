@@ -109,12 +109,16 @@ def detect_intent(user_input: str):
     best_idx = scores.argmax()
     return intent_labels[best_idx] if scores[best_idx] >= 0.3 else None
 
+from difflib import get_close_matches
+from unidecode import unidecode
+
 def fuzzy_find_movie_name(name: str, movie_list: list) -> dict:
-    name_clean = clean_text(name)
+    name_clean = unidecode(name).lower().strip()
+
     if not name_clean:
         return None
 
-    # So khớp tuyệt đối (không clean) với movie_name_vn
+    # So khớp tuyệt đối với tên gốc (không clean)
     for m in movie_list:
         if name.strip().lower() == m["movie_name_vn"].strip().lower():
             return m
@@ -129,10 +133,11 @@ def fuzzy_find_movie_name(name: str, movie_list: list) -> dict:
         if name_clean in m["vn_clean"]:
             return m
 
-    # fallback: fuzzy match (cutoff thấp hơn cho tên ngắn)
-    matched = get_close_matches(name_clean, [m["vn_clean"] for m in movie_list], n=1, cutoff=0.5)
-    if matched:
-        return next((m for m in movie_list if m["vn_clean"] == matched[0]), None)
+    # So khớp fuzzy gần đúng
+    title_map = {m["vn_clean"]: m for m in movie_list}
+    matches = get_close_matches(name_clean, title_map.keys(), n=1, cutoff=0.6)
+    if matches:
+        return title_map[matches[0]]
 
     return None
 

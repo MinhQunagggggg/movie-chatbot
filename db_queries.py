@@ -63,19 +63,24 @@ def get_multiple_nearest_showtimes():
         cur = conn.cursor()
         cur.execute("""
             SELECT 
-                m.movie_name_vn, sd.show_date, s.schedule_time, ms.cinema_room_id
-            FROM 
-                movietheater_movie m
-            JOIN 
-                movietheater_movie_schedule ms ON m.movie_id = ms.movie_id
-            JOIN 
-                movietheater_show_dates sd ON ms.show_date_id = sd.show_date_id
-            JOIN 
-                movietheater_schedule s ON ms.schedule_id = s.schedule_id
-            WHERE 
-                sd.show_date = CURRENT_DATE
-            ORDER BY 
-                m.movie_name_vn, TO_TIMESTAMP(TRIM(s.schedule_time), 'HH24:MI')::time ASC
+    m.movie_name_vn, 
+    sd.show_date, 
+    s.schedule_time, 
+    ms.cinema_room_id
+FROM 
+    movietheater_movie m
+JOIN 
+    movietheater_movie_schedule ms ON m.movie_id = ms.movie_id
+JOIN 
+    movietheater_show_dates sd ON ms.show_date_id = sd.show_date_id
+JOIN 
+    movietheater_schedule s ON ms.schedule_id = s.schedule_id
+WHERE 
+    sd.show_date = CURRENT_DATE
+    AND TO_TIMESTAMP(TRIM(s.schedule_time), 'HH24:MI')::time > CURRENT_TIME
+ORDER BY 
+    TO_TIMESTAMP(TRIM(s.schedule_time), 'HH24:MI')::time ASC
+
         """)
         rows = cur.fetchall()
         result = []
